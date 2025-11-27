@@ -1,0 +1,46 @@
+Qué son un **set** y un **bag** en el contexto de estructuras de datos:
+
+## **Bag (Bolsa/Multiconjunto)**
+
+Un **bag** es una colección desordenada de elementos que **permite duplicados**. Piensa en una bolsa donde puedes meter cosas sin preocuparte del orden:
+
+- Puedes añadir elementos: `add(element)`
+- Puedes eliminar elementos: `remove(element)`
+- Puedes contar cuántas veces aparece un elemento: `count(element)`
+- **Permite elementos repetidos**
+- No mantiene ningún orden específico
+
+**Ejemplo:**
+```
+Bag: {3, 5, 3, 7, 5, 3}
+- El 3 aparece 3 veces
+- El 5 aparece 2 veces
+- El 7 aparece 1 vez
+```
+
+## **Set (Conjunto)**
+
+Un **set** es una colección que **NO permite duplicados**. Cada elemento aparece como máximo una vez:
+
+- Si intentas añadir un elemento que ya existe, no se añade de nuevo
+- Útil para eliminar duplicados o verificar pertenencia
+- Tampoco mantiene orden (a menos que sea un "ordered set")
+
+**Ejemplo:**
+```
+Set: {3, 5, 7}
+- Cada elemento aparece exactamente una vez
+- Si intentas añadir otro 3, se ignora
+```
+
+## **En tu ejercicio:**
+
+**Primera parte:** Debes hacer que los bags sean "searchables" (con función de búsqueda):
+- `searchable_array_bag`: bag implementado con array que puede buscar elementos
+- `searchable_tree_bag`: bag implementado con árbol binario de búsqueda que puede buscar elementos
+
+**Segunda parte:** Debes crear un `set` que **envuelva** (wrap) un `searchable_bag` y añada la lógica para **rechazar duplicados**.
+
+La diferencia clave: 
+- **Bag permite duplicados** → puede tener {3, 3, 5}
+- **Set NO permite duplicados** → solo puede tener {3, 5}

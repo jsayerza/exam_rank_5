@@ -1,0 +1,1 @@
+El level 1 tiene contenido, que son mains para poder hacer pruebas, y, en el caso de polyset, te dan 7 archivos (3 clases con sus codigos .hpp .cpp y el main.cpp)
