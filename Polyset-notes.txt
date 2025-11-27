@@ -1,0 +1,86 @@
+## **1. `#pragma once`**
+
+Es una **directiva del preprocesador** que previene la inclusión múltiple del mismo archivo de cabecera. Es equivalente pero más simple que los include guards tradicionales:
+
+```cpp
+// Forma tradicional (antigua)
+#ifndef TREE_BAG_HPP
+#define TREE_BAG_HPP
+// ... código ...
+#endif
+
+// Forma moderna (más limpia)
+#pragma once
+```
+
+**Ventaja:** Evita que el compilador procese el mismo archivo múltiples veces, lo que causaría errores de "redefinición".
+
+## **2. `virtual public` en la herencia**
+
+```cpp
+class tree_bag : virtual public bag
+```
+
+**Herencia virtual** resuelve el problema del **"diamante de la muerte"** (diamond problem). En tu ejercicio:
+
+```
+         bag
+        /   \
+   tree_bag  array_bag
+        \   /
+    searchable_tree_bag
+```
+
+Sin `virtual`, `searchable_tree_bag` tendría **dos copias** de `bag`, causando ambigüedad. Con `virtual public`, solo hay **una instancia compartida** de `bag`.
+
+## **3. `protected node *tree;`**
+
+Es `protected` (no `private`) porque:
+
+- Las **clases derivadas** (`searchable_tree_bag`) necesitan acceder al árbol directamente
+- Si fuera `private`, la clase hija no podría implementar búsquedas en el árbol
+- `protected` = accesible en la clase y sus hijas, pero no desde fuera
+
+## **4. Funciones `private`**
+
+```cpp
+private:
+  static void destroy_tree(node *);
+  static void print_node(node *);
+  static void *copy_node(node *);
+```
+
+Son `private` porque son **funciones auxiliares internas** (helpers):
+
+- Solo se usan dentro de `tree_bag` para implementar otras operaciones
+- No son parte de la interfaz pública de la clase
+- **Encapsulación:** ocultan detalles de implementación
+- Ejemplo: `destroy_tree` es llamada por el destructor, pero nadie fuera debe llamarla directamente
+
+## **5. Funciones `static`**
+
+Son `static` porque **no necesitan acceder al objeto `this`**:
+
+```cpp
+// Función NO static (necesita 'this')
+void clear() {
+    destroy_tree(this->tree);  // Accede a miembro del objeto
+    this->tree = nullptr;
+}
+
+// Función static (solo trabaja con parámetros)
+static void destroy_tree(node *n) {
+    if (!n) return;
+    destroy_tree(n->l);      // Recursión
+    destroy_tree(n->r);
+    delete n;                // No usa 'this'
+}
+```
+
+**Ventajas de `static` aquí:**
+- Más eficiente (no pasa puntero `this` oculto)
+- Más claro que solo trabajan con los parámetros
+- Pueden ser llamadas internamente sin objeto: `tree_bag::destroy_tree(nodo)`
+- Son funciones de utilidad pura para manipular nodos
+
+**Resumen:** Son helpers recursivos que operan sobre nodos individuales, no sobre el objeto completo de la clase.
