@@ -43,15 +43,6 @@ int main(int argc, char **argv) {
     sa.get_bag().print();
     st.print();
     sa.clear();
-    // sa.insert(
-    //     (int[]){
-    //         1,
-    //         2,
-    //         3,
-    //         4,
-    //     },
-    //     4);
-    // FIX: Array con nombre
     int tmp_array[] = {1, 2, 3, 4};
     sa.insert(tmp_array, 4);
 	std::cout << std::endl;

@@ -1,5 +1,4 @@
 ## **1. `#pragma once`**
-
 Es una **directiva del preprocesador** que previene la inclusión múltiple del mismo archivo de cabecera. Es equivalente pero más simple que los include guards tradicionales:
 
 ```cpp
@@ -15,8 +14,8 @@ Es una **directiva del preprocesador** que previene la inclusión múltiple del 
 
 **Ventaja:** Evita que el compilador procese el mismo archivo múltiples veces, lo que causaría errores de "redefinición".
 
-## **2. `virtual public` en la herencia**
 
+## **2. `virtual public` en la herencia**
 ```cpp
 class tree_bag : virtual public bag
 ```
@@ -33,16 +32,16 @@ class tree_bag : virtual public bag
 
 Sin `virtual`, `searchable_tree_bag` tendría **dos copias** de `bag`, causando ambigüedad. Con `virtual public`, solo hay **una instancia compartida** de `bag`.
 
-## **3. `protected node *tree;`**
 
+## **3. `protected node *tree;`**
 Es `protected` (no `private`) porque:
 
 - Las **clases derivadas** (`searchable_tree_bag`) necesitan acceder al árbol directamente
 - Si fuera `private`, la clase hija no podría implementar búsquedas en el árbol
 - `protected` = accesible en la clase y sus hijas, pero no desde fuera
 
-## **4. Funciones `private`**
 
+## **4. Funciones `private`**
 ```cpp
 private:
   static void destroy_tree(node *);
@@ -57,8 +56,8 @@ Son `private` porque son **funciones auxiliares internas** (helpers):
 - **Encapsulación:** ocultan detalles de implementación
 - Ejemplo: `destroy_tree` es llamada por el destructor, pero nadie fuera debe llamarla directamente
 
-## **5. Funciones `static`**
 
+## **5. Funciones `static`**
 Son `static` porque **no necesitan acceder al objeto `this`**:
 
 ```cpp
@@ -84,3 +83,119 @@ static void destroy_tree(node *n) {
 - Son funciones de utilidad pura para manipular nodos
 
 **Resumen:** Son helpers recursivos que operan sobre nodos individuales, no sobre el objeto completo de la clase.
+
+---------------------------------------------------------------------------------------
+6. bag(), **herencia virtual** (diamond problem).
+
+## **El problema del diamante:**
+
+```
+         bag (virtual)
+        /   \
+   array_bag  searchable_bag
+        \   /
+  searchable_array_bag
+```
+
+Cuando tienes **herencia múltiple con una clase base virtual**, necesitas inicializarla explícitamente.
+
+## **¿Por qué?**
+
+Mira las declaraciones:
+
+```cpp
+// En bag.hpp
+class bag { /* ... */ };
+
+// En array_bag.hpp
+class array_bag : virtual public bag { /* ... */ };
+
+// En searchable_bag.hpp
+class searchable_bag : virtual public bag { /* ... */ };
+
+// En searchable_array_bag.hpp
+class searchable_array_bag : public array_bag, public searchable_bag { /* ... */ };
+```
+
+La palabra clave **`virtual`** hace que `bag` sea una **subobject compartido** entre `array_bag` y `searchable_bag`.
+
+## **Regla de inicialización con herencia virtual:**
+
+> **La clase más derivada es responsable de inicializar la clase base virtual.**
+
+Esto significa que **`searchable_array_bag`** (la clase hija final) debe inicializar `bag()` directamente, aunque ya esté en la lista de inicialización de `array_bag`.
+
+## **Sin `bag()`:**
+
+```cpp
+// ❌ ERROR (en algunas implementaciones):
+searchable_array_bag::searchable_array_bag(const searchable_array_bag& other) 
+    : array_bag(other) {}
+```
+
+El compilador no sabe si debe:
+- Usar el constructor de `bag` llamado por `array_bag`
+- Usar el constructor de `bag` llamado por `searchable_bag`
+- Usar el constructor por defecto de `bag`
+
+## **Con `bag()`:**
+
+```cpp
+// ✅ CORRECTO:
+searchable_array_bag::searchable_array_bag(const searchable_array_bag& other) 
+    : bag(), array_bag(other) {}
+```
+
+Le dices explícitamente: *"Inicializa `bag` con su constructor por defecto, luego inicializa `array_bag` con la copia"*.
+
+## **Orden de inicialización real:**
+
+1. **`bag()`** → se inicializa primero (clase base virtual)
+2. **`array_bag(other)`** → se inicializa después
+3. **`searchable_bag`** → usa el `bag` ya inicializado
+4. Cuerpo del constructor de `searchable_array_bag`
+
+## **Comparación con constructor sin parámetros:**
+
+```cpp
+// Constructor por defecto: NO necesitas bag() explícitamente
+searchable_array_bag::searchable_array_bag() : array_bag() {}
+// Aquí bag() se llama implícitamente
+
+// Constructor de copia: SÍ necesitas bag() explícitamente
+searchable_array_bag::searchable_array_bag(const searchable_array_bag& other) 
+    : bag(), array_bag(other) {}
+```
+
+**Resumen:** Con herencia virtual, la clase más derivada **siempre** debe inicializar explícitamente la clase base virtual en constructores no-default para evitar ambigüedades.
+
+----------------------------------------------------------------------------------------
+7. Clase set
+1. Constructor con referencia en lugar de puntero
+set sa(*a); → El constructor debe aceptar una referencia, no un puntero
+sa.get_bag() → Necesitas añadir este método que devuelve la referencia al bag interno
+set(searchable_bag &bag);
+
+¿Por qué?
+El main llama set sa(*a); → desreferencia el puntero a con *a
+Esto pasa una referencia al objeto, no un puntero
+Internamente guardamos la dirección: _bag(&bag)
+
+2. Método get_bag()
+cppsearchable_bag &set::get_bag() const {
+    return *_bag;
+}
+El main hace:
+cppsa.get_bag().print();
+Este método devuelve una referencia al bag subyacente, permitiendo acceso directo al bag interno del set.
+Diferencia clave:
+// En el main:
+searchable_bag *a = new searchable_array_bag;
+
+// Estas dos formas son equivalentes:
+set sa(*a);           // Desreferencia el puntero → pasa referencia
+set sa2(a[0]);        // Acceso a índice 0 → también referencia
+
+// static_cast usado en tmp:
+const searchable_array_bag tmp(static_cast<searchable_array_bag &>(*a));
+// Hace downcast de searchable_bag* a searchable_array_bag& específico

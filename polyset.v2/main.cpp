@@ -39,19 +39,14 @@ int main(int argc, char **argv) {
     sa.insert(atoi(argv[i]));
 
     sa.has(atoi(argv[i]));
+	// std::cout << "busca a sa: " << (atoi(argv[i])) << " --> " << sa.has(atoi(argv[i])) << std::endl;
+	std::cout << "sa: ";
     sa.print();
+	std::cout << "sa (get_bag): ";
     sa.get_bag().print();
+	std::cout << "st: ";
     st.print();
     sa.clear();
-    // sa.insert(
-    //     (int[]){
-    //         1,
-    //         2,
-    //         3,
-    //         4,
-    //     },
-    //     4);
-    // FIX: Array con nombre
     int tmp_array[] = {1, 2, 3, 4};
     sa.insert(tmp_array, 4);
 	std::cout << std::endl;
