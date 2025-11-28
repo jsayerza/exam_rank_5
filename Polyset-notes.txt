@@ -65,7 +65,7 @@ Son `static` porque **no necesitan acceder al objeto `this`**:
 // Función NO static (necesita 'this')
 void clear() {
     destroy_tree(this->tree);  // Accede a miembro del objeto
-    this->tree = nullptr;
+    this->tree = NULL;
 }
 
 // Función static (solo trabaja con parámetros)
