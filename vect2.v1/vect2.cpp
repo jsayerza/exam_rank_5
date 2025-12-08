@@ -29,6 +29,13 @@ vect2 vect2::operator*(int scaler) const
 }
 
 ////////////////////////////////////////////
+vect2 operator*(int scaler, const vect2& other)
+{
+	return vect2(other * scaler);
+}
+
+
+////////////////////////////////////////////
 vect2& vect2::operator+=(const vect2& other)
 {
 	_x += other._x;
@@ -76,6 +83,14 @@ vect2 vect2::operator--(int)
 	return (temp);
 }
 
+////////////////////////////////////////////
+vect2& vect2::operator-()
+{
+	_x *= -1;
+	_y *= -1;
+	return (*this);
+}
+
 /////////////////////////////////////////////////
 bool vect2::operator==(const vect2& other) const
 {
@@ -88,6 +103,10 @@ bool vect2::operator!=(const vect2& other) const
 
 //////////////////////////////////////
 int vect2::operator[](int index) const
+{
+	return (index == 0 ? _x : _y);
+}
+int& vect2::operator[](int index)
 {
 	return (index == 0 ? _x : _y);
 }
