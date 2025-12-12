@@ -3,7 +3,6 @@
 #include "set.hpp"
 
 #include <iostream>
-#include <cstdlib>
 
 int main(int argc, char **argv) {
   if (argc == 1)
@@ -39,18 +38,25 @@ int main(int argc, char **argv) {
     sa.insert(atoi(argv[i]));
 
     sa.has(atoi(argv[i]));
-	// std::cout << "busca a sa: " << (atoi(argv[i])) << " --> " << sa.has(atoi(argv[i])) << std::endl;
-	std::cout << "sa: ";
     sa.print();
-	std::cout << "sa (get_bag): ";
     sa.get_bag().print();
-	std::cout << "st: ";
     st.print();
     sa.clear();
     int tmp_array[] = {1, 2, 3, 4};
     sa.insert(tmp_array, 4);
 	std::cout << std::endl;
   }
+std::cout << "a 1 : ";
+sa.print();
+sa.insert(2);
+std::cout << "a 2 : ";
+sa.print();
+
+std::cout << "t 1 : ";
+st.print();
+st.insert(2);
+std::cout << "t 2 : ";
+st.print();
 
   return 0;
 }

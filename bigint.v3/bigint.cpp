@@ -1,118 +1,199 @@
-#include "bigint.hpp"
-#include <cstdlib>
+# include "bigint.hpp"
 
-bigint::bigint() : _bi("0") {}
-bigint::bigint(std::string str) : _bi(str)
+void bigint::delZeros()
+{
+	int len = _str.length();
+	if (len < 2)
+		return;
+	int i = 0;
+	while (i < len && _str[i] == '0')
+		i++;
+	_str = _str.substr(i, len - i);
+}
+
+
+bigint::bigint() : _str("0") {}
+bigint::bigint(std::string str) : _str(str)
 {
 	delZeros();
 }
-bigint::bigint(int num) : _bi(std::to_string(num)) {}
-bigint::bigint(const bigint& other) : _bi(other._bi) {}
-bigint::~bigint(){}
+bigint::bigint(int num) : _str(std::to_string(num)) {}
+bigint::bigint(const bigint& other) : _str(other._str) {}
+bigint::~bigint() {}
 bigint& bigint::operator=(const bigint& other)
 {
 	if (this != &other)
-	{
-		_bi = other._bi;
-	}
+		_str = other._str;
 	return (*this);
 }
 
-/////////////////////////////////////////////////////////
-bool bigint::operator==(const bigint& other) const
-{
-	if (_bi.length() != other._bi.length())
-		return (false);
-	return (_bi == other._bi);
-}
-bool bigint::operator!=(const bigint& other) const
-{
-	return (!(*this == other));
-}
-
-/////////////////////////////////////////////////////////
+//addition
 bigint bigint::operator+(const bigint& other) const
 {
-	std::string thisStr = this->_bi;
-	std::string thatStr = other._bi;
+	std::string thisStr = _str;
+	std::string thatStr = other._str;
+	int thisStrLen = thisStr.length();
+	int thatStrLen = thatStr.length();
 	int len = 0;
-	if (thisStr.length() < thatStr.length())
+	if (thisStrLen > thatStrLen)
 	{
-		len = thatStr.length() - thisStr.length();
-		thisStr = std::string(len, '0') + thisStr;
+		len = thisStrLen - thatStrLen;
+		thatStr = std::string(len, '0') + thatStr;
 	}
 	else
 	{
-		len = thisStr.length() - thatStr.length();
-		thatStr = std::string(len, '0') + thatStr;
+		len = thatStrLen - thisStrLen;
+		thisStr = std::string(len, '0') + thisStr;
 	}
 
-	std::cout << "thisStr: " << thisStr << std::endl;
-	std::cout << "thatStr: " << thatStr << std::endl;
-
 	std::string result = "";
-	int carry = 0;
 	int suma = 0;
+	int carry = 0;
 	int i = thisStr.length() - 1;
 	while (i >= 0)
 	{
-		suma = carry + (thisStr[i] - '0') + (thatStr[i] - '0');
+		suma = carry + (thisStr[i] - '0')+ (thatStr[i] - '0');
 		carry = suma / 10;
 		result = (char)((suma % 10) + '0') + result;
-		// std::cout << "i: " << i;
-		// std::cout << " suma: " << suma;
-		// std::cout << " carry: " << carry;
-		// std::cout << " result: " << result << std::endl;
 		i--;
 	}
 	if (carry)
-		result = "1" + result;
+		result = '1' + result;
+
 	return bigint(result);
 }
-
 bigint& bigint::operator+=(const bigint& other)
 {
 	*this = *this + other;
 	return (*this);
 }
-
-
-/////////////////////////////////////////////////////////
-bigint& bigint::operator<<(int shift)
+bigint bigint::operator++(int)	//v++
 {
-	if (shift < 2)
-		return (*this);
-	_bi = _bi + std::string(shift, '0');
+	bigint temp = *this;
+	*this = *this + bigint(1);
+	return bigint(temp);
+}
+bigint& bigint::operator++()	// ++v
+{
+	*this = *this + bigint(1);
 	return (*this);
 }
-bigint& bigint::operator>>(int shift)
+
+//"digitshift"
+unsigned int strToUInt(std::string str)
 {
-	int len = _bi.length();
-	if (shift >= len)
-		_bi = "0";
+	unsigned int result = 0;
+	std::stringstream ss(str);
+	ss >> result;
+	return (result);
+}
+bigint bigint::operator<<(unsigned int shift) const
+{
+	std::string str ="";
+	if (_str == "0")
+		str = "0";
 	else
-		_bi = _bi.substr(0, len - shift);
+		str = _str + std::string(shift, '0');
+	return bigint(str);
+}
+bigint& bigint::operator<<=(unsigned int shift)
+{
+	if (_str == "0")
+		_str = "0";
+	else
+		_str = _str + std::string(shift,'0');
+	return (*this);
+}
+bigint bigint::operator<<(const bigint& other) const
+{
+	unsigned int shift = strToUInt(other._str);
+	bigint temp = *this << shift;
+	return bigint(temp);
+}
+bigint& bigint::operator<<=(const bigint& other)
+{
+	unsigned int shift = strToUInt(other._str);
+	*this = *this << shift;
 	return (*this);
 }
 
-/////////////////////////////////////////////////////////
-std::string& bigint::getBi()
+
+bigint bigint::operator>>(unsigned int shift) const
 {
-	return (_bi);
+	unsigned int len = _str.length();
+	std::string str ="";
+	if (len <= shift)
+		str = "0";
+	else
+		str = _str.substr(0, len - shift);
+	return bigint(str);
+}
+bigint& bigint::operator>>=(unsigned int shift)
+{
+	unsigned int len = _str.length();
+	if (len <= shift)
+		_str = "0";
+	else
+		_str = _str.substr(0, len - shift);
+	return (*this);
+}
+bigint bigint::operator>>(const bigint& other) const
+{
+	unsigned int shift = strToUInt(other._str);
+	bigint temp = *this >> shift;
+	return bigint(temp);
+}
+bigint& bigint::operator>>=(const bigint& other)
+{
+	unsigned int shift = strToUInt(other._str);
+	*this = *this >> shift;
+	return (*this);
 }
 
-void bigint::delZeros()
+
+//comparison
+
+
+bool bigint::operator>(const bigint& other) const
 {
-	if (_bi.length() < 2)
-		return;
-	size_t i = 0;
-	while (i < _bi.length() && _bi[i] == '0')
-		i++;
-	_bi = _bi.substr(i, _bi.length());
+	int thisLen = _str.length();
+	int otherLen = other._str.length();
+	if (thisLen != otherLen)
+		return (thisLen > otherLen);
+	else
+		return (_str > other._str);
+}
+bool bigint::operator<(const bigint& other) const
+{
+	return ((other > *this));
+}
+bool bigint::operator==(const bigint& other) const
+{
+	return (_str == other._str);
+}
+bool bigint::operator!=(const bigint& other) const
+{
+	return (!(_str == other._str));
+}
+bool bigint::operator>=(const bigint& other) const
+{
+	return ((*this > other) || (*this == other));
+}
+bool bigint::operator<=(const bigint& other) const
+{
+	return ((*this < other) || (*this == other));
 }
 
-std::ostream& operator<<(std::ostream& os, bigint& bi)
+
+
+std::string bigint::getStr() const
 {
-	os << bi.getBi();
-	return (os);
+	return (_str);
 }
+
+std::ostream& operator<<(std::ostream& s, const bigint& bi)
+{
+	s << bi.getStr() << std::endl;
+	return (s);
+}
+

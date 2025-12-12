@@ -1,9 +1,8 @@
-#ifndef SET_HPP
-# define SET_HPP
+#pragma once
 
-# include "./subject/searchable_bag.hpp"
+#include "searchable_bag.hpp"
 
-class set : public searchable_bag 
+class set : public searchable_bag
 {
 	private:
 		searchable_bag* _bag;
@@ -13,13 +12,12 @@ class set : public searchable_bag
 		~set();
 		set& operator=(const set& other);
 
-		void insert(int value);
+		bool has(int num) const;
+
+		void insert(int num);
 		void insert(int *array, int size);
 		void print() const;
 		void clear();
 
-		bool has(int value) const;
 		searchable_bag& get_bag() const;
 };
-
-#endif

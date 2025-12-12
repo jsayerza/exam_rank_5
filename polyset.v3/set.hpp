@@ -1,9 +1,8 @@
 #pragma once
 
-#include "bag.hpp"
 #include "searchable_bag.hpp"
 
-class set : public searchable_bag
+class set
 {
 	private:
 		searchable_bag* _bag;
@@ -13,11 +12,13 @@ class set : public searchable_bag
 		~set();
 		set& operator=(const set& other);
 
-	void insert (int number);
-	void insert (int *array, int size);
-	void print() const;
-	void clear();
+		bool has(int num) const;
 
-	bool has(int number) const;
-	searchable_bag& get_bag();
+		void insert (int num);
+		void insert (int *array, int size);
+		void print() const;
+		void clear();
+
+		searchable_bag& get_bag();
+
 };

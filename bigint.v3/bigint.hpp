@@ -1,14 +1,15 @@
 #ifndef BIGINT_HPP
 # define BIGINT_HPP
 
-#include <ostream>
-#include <iostream>
-#include <string>
+# include <string>
+# include <iostream>
+# include <ostream>
+# include <sstream>
 
 class bigint
 {
 	private:
-		std::string _bi;
+		std::string _str;
 		void delZeros();
 	public:
 		bigint();
@@ -18,18 +19,34 @@ class bigint
 		~bigint();
 		bigint& operator=(const bigint& other);
 
-		bool operator==(const bigint& other) const;
-		bool operator!=(const bigint& other) const;
-
+		//addition
 		bigint operator+(const bigint& other) const;
 		bigint& operator+=(const bigint& other);
+		bigint operator++(int);
+		bigint& operator++();
 
-		bigint& operator<<(int shift);
-		bigint& operator>>(int shift);
+		//"digitshift"
+		bigint operator>>(unsigned int shift) const;
+		bigint& operator>>=(unsigned int shift);
+		bigint operator>>(const bigint& other) const;
+		bigint& operator>>=(const bigint& other);
 
-		std::string& getBi();
+		bigint operator<<(unsigned int shift) const;
+		bigint& operator<<=(unsigned int shift);
+		bigint operator<<(const bigint& other) const;
+		bigint& operator<<=(const bigint& other);
+
+		//comparison
+		bool operator>(const bigint& other) const;
+		bool operator<(const bigint& other) const;
+		bool operator==(const bigint& other) const;
+		bool operator!=(const bigint& other) const;
+		bool operator>=(const bigint& other) const;
+		bool operator<=(const bigint& other) const;
+
+		std::string getStr() const;
 };
 
-std::ostream& operator<<(std::ostream& os, bigint& bi);
+std::ostream& operator<<(std::ostream& s, const bigint& bi);
 
 #endif

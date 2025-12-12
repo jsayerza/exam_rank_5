@@ -1,116 +1,53 @@
 #include "bigint.hpp"
 
-int main()
+int main(void)
 {
-	bigint bi1;
-	bigint bi2("0000123");
-	bigint bi3(456);
-	bigint bi4 = bi3;
-	bigint bi5(bi4);
+	const bigint a(42);
+	bigint b(21), c, d(1337), e(d);
 
-	std::cout << "bi1: " << bi1 << std::endl;
-	std::cout << "bi2: " << bi2 << std::endl;
-	std::cout << "bi3: " << bi3 << std::endl;
-	std::cout << "bi4: " << bi4 << std::endl;
-	std::cout << "bi5: " << bi5 << std::endl;
+	// base test
+	std::cout << "a = " << a << std::endl;
+	std::cout << "b = " << b << std::endl;
+	std::cout << "c = " << c << std::endl;
+	std::cout << "d = " << d << std::endl;
+	std::cout << "e = " << e << std::endl;
 
-	bigint bi6 = bi5 >> 0;
-	std::cout << "bi6 = bi5 >> 0: " << bi6 << std::endl;
+	bigint bi1("000123");
+	std::cout << "bi1 = " << bi1 << std::endl;
 
-	bi6 = bi5 >> 1;
-	std::cout << "bi6 = bi5 >> 1: " << bi6 << std::endl;
+	std::cout << "a + b = " << a + b << std::endl;
+	std::cout << "a + c = " << a + c << std::endl;
+	std::cout << "(c += a) = " << (c += a) << std::endl;
 
-	bi6 = bi5 >> 3;
-	std::cout << "bi6 = bi5 >> 3: " << bi6 << std::endl;
+	std::cout << "b = " << b << std::endl;
+	std::cout << "++b = " << ++b << std::endl;
+	std::cout << "b++ = " << b++ << std::endl;
+	std::cout << "b = " << b << std::endl;
 
-	bi6 = bi5 >> 4;
-	std::cout << "bi6 = bi5 >> 4: " << bi6 << std::endl;
+	// b = 23, b << 10 -> 23000000000 + 42 = 23000000042
+	std::cout << "(b << 10) + 42 = " << ((b << 10) + 42) << std::endl;
+	std::cout << "b = " << b << std::endl;
+	std::cout << "(d <<= 4) = " << (d <<= 4) << ", d: " << d << std::endl;
+	std::cout << "(d >>= 2) = " << (d >>= (const bigint)2) << ", d: " << d << std::endl;
 
+	std::cout << "a = " << a << std::endl; // a = 42
+	std::cout << "d = " << d << std::endl; // d = 5348
 
-	bi6 = bi5 << 0;
-	std::cout << "bi6 = bi5 << 0: " << bi6 << std::endl;
+	std::cout << "(d < a) = " << (d < a) << std::endl; // (d < a) = 0
+	std::cout << "(d > a) = " << (d > a) << std::endl; // (d > a) = 1
+	std::cout << "(d == d) = " << (d == d) << std::endl; // (d == d) = 1
+	std::cout << "(d != a) = " << (d != a) << std::endl; // (d != a) = 1
+	std::cout << "(d <= a) = " << (d <= a) << std::endl; // (d <= a) = 0
+	std::cout << "(d >= a) = " << (d >= a) << std::endl; // (d >= a) = 1
 
-	bi6 = bi5 << 1;
-	std::cout << "bi6 = bi5 << 1: " << bi6 << std::endl;
+	// extra
+	bigint x(12345678); bigint y(5);
+	std::cout << "(x << y) = " << (x << y) << ", x: " << x << ", y: " << y << std::endl;
+	std::cout << "(x >>= y) = " << (x >>= y) << ", x: " << x << ", y: " << y << std::endl;
+	std::cout << "(x >= y) = " << (x >= y) << ", x: " << x << ", y: " << y << std::endl;
 
-	bi6 = bi5 << 3;
-	std::cout << "bi6 = bi5 << 3: " << bi6 << std::endl;
-
-	bi6 = bi5 << 4;
-	std::cout << "bi6 = bi5 << 4: " << bi6 << std::endl;
-
-	bi6 >>= 4;
-	std::cout << "bi6 >>= 4: " << bi6 << std::endl;
-
-	bi6 <<= 4;
-	std::cout << "bi6 <<= 4: " << bi6 << std::endl;
-
-	bigint bi7(12345);
-	std::cout << "bi7: " << bi7 << std::endl;
-	std::cout << "bi7 <<= 5: " << (bi7 <<= 5) << std::endl;
-	std::cout << "bi7 >>= 5: " << (bi7 >>= 5) << std::endl;
-
-	std::cout << std::endl;
-	std::cout << "bi2: " << bi2 << std::endl;
-	std::cout << "bi3: " << bi3 << std::endl;
-	std::cout << "bi4: " << bi4 << std::endl;
-	std::cout << "bi2 == bi3: " << (bi2 == bi3) << std::endl;
-	std::cout << "bi2 == bi4: " << (bi2 == bi4) << std::endl;
-	std::cout << "bi3 == bi4: " << (bi3 == bi4) << std::endl;
-	std::cout << "bi2 != bi3: " << (bi2 != bi3) << std::endl;
-	std::cout << "bi2 != bi4: " << (bi2 != bi4) << std::endl;
-	std::cout << "bi3 != bi4: " << (bi3 != bi4) << std::endl;
-
-	std::cout << std::endl;
-	std::cout << "bi1: " << bi1 << std::endl;
-	std::cout << "bi2: " << bi2 << std::endl;
-	std::cout << "bi3: " << bi3 << std::endl;
-	std::cout << "bi4: " << bi4 << std::endl;
-	std::cout << "bi5: " << bi5 << std::endl;
-	std::cout << "bi6: " << bi6 << std::endl;
-	std::cout << "bi2 < bi3: " << (bi2 < bi3) << std::endl;
-	std::cout << "bi6 < bi4: " << (bi6 < bi4) << std::endl;
-	std::cout << "bi3 < bi4: " << (bi3 < bi4) << std::endl;
-	std::cout << "bi1 > bi3: " << (bi1 > bi3) << std::endl;
-	std::cout << "bi2 > bi4: " << (bi2 > bi4) << std::endl;
-	std::cout << "bi3 > bi4: " << (bi3 > bi4) << std::endl;
-
-	std::cout << std::endl;
-	std::cout << "bi1: " << bi1 << std::endl;
-	std::cout << "bi2: " << bi2 << std::endl;
-	std::cout << "bi3: " << bi3 << std::endl;
-	std::cout << "bi4: " << bi4 << std::endl;
-	std::cout << "bi1 <= bi3: " << (bi1 <= bi3) << std::endl;
-	std::cout << "bi2 <= bi4: " << (bi6 <= bi4) << std::endl;
-	std::cout << "bi3 <= bi4: " << (bi3 <= bi4) << std::endl;
-	std::cout << "bi1 >= bi3: " << (bi1 >= bi3) << std::endl;
-	std::cout << "bi2 >= bi4: " << (bi2 >= bi4) << std::endl;
-	std::cout << "bi3 >= bi4: " << (bi3 >= bi4) << std::endl;
-
-	std::cout << std::endl;
-	bigint bi8(67890);
-	bigint bi9(97890);
-	bigint bi10(0);
-	bigint bi11(0);
-	bigint bi12(0);
-	bigint bi13(0);
-	bigint bi14(0);
-	std::cout << "bi2: " << bi2 << std::endl;
-	std::cout << "bi7: " << bi7 << std::endl;
-	std::cout << "bi8: " << bi8 << std::endl;
-	std::cout << "bi9: " << bi9 << std::endl;
-	std::cout << "bi10 = bi7 + bi8: " << (bi10 = bi7 + bi8) << std::endl << std::endl;
-	std::cout << "bi11 = bi9 + bi7: " << (bi11 = bi9 + bi7) << std::endl << std::endl;
-	std::cout << "bi14 = bi7 + bi9: " << (bi14 = bi7 + bi9) << std::endl << std::endl;
-	std::cout << "bi12 = bi7 + bi2: " << (bi12 = bi7 + bi2) << std::endl << std::endl;
-	std::cout << "bi13 = bi2 + bi7: " << (bi13 = bi2 + bi7) << std::endl << std::endl;
-
-	std::cout << "bi2: " << bi2 << std::endl;
-	std::cout << "bi7: " << bi7 << std::endl;
-	std::cout << "bi2 += bi7: " << (bi2 += bi7) << std::endl;
-	std::cout << "bi2: " << bi2 << std::endl;
-	std::cout << "bi7: " << bi7 << std::endl;
-
+	std::cout << "x= " << (x <<= 5) << ", y= " << (y <<= 12) << std::endl;
+	std::cout << "(x >= y) = " << (x >= y) << ", x: " << x << ", y: " << y << std::endl;
 
 	return (0);
 }

@@ -3,7 +3,6 @@
 #include "set.hpp"
 
 #include <iostream>
-#include <cstdlib>
 
 int main(int argc, char **argv) {
   if (argc == 1)
@@ -47,6 +46,17 @@ int main(int argc, char **argv) {
     sa.insert(tmp_array, 4);
 	std::cout << std::endl;
   }
+std::cout << "a 1 : ";
+sa.print();
+sa.insert(2);
+std::cout << "a 2 : ";
+sa.print();
+
+std::cout << "t 1 : ";
+st.print();
+st.insert(2);
+std::cout << "t 2 : ";
+st.print();
 
   return 0;
 }
