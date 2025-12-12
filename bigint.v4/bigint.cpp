@@ -1,3 +1,7 @@
+//// g++ -Wall -Werror -Wextra --std=c++98 main.cpp bigint.cpp
+//// error: ‘to_string’ is not a member of ‘std’ --> use alternative function or develop 
+
+
 # include "bigint.hpp"
 
 void bigint::delZeros()
