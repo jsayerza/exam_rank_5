@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 typedef struct s_map
 {
@@ -161,7 +162,7 @@ int read_map(FILE *f, t_map *map)
 {
     char *line;
     size_t len;
-    long read_bytes;
+    ssize_t read_bytes;
     int row;
     int is_valid;
 
