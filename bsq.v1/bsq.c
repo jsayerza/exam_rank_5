@@ -97,7 +97,10 @@ int first_line_parse(FILE* file, t_map *map)
 
 	nread = getline(&line, &len, file);
 	if (nread == -1)
+	{
+		free(line);
 		return (-1);
+	}
 	map->rows = ft_atoi(line, &i);
 	while (ft_is_space(line[i]))
 		i++;

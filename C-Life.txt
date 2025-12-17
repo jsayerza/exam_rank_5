@@ -14,7 +14,7 @@ Each command is one of these characters:
     w a s d -> move the pen up, left, bottom, and right.
     x         -> lift or lower the pen in order to start or stop drawing.
 
-once end of Tile is reached, your program must simulate a game ot Life on board and print the result in stdout (each cell alive will be represented by the character '0' and each dead cell will be represented by a space)
+once end of tile is reached, your program must simulate a Game of Life on board and print the result in stdout (each cell alive will be represented by the character '0' and each dead cell will be represented by a space)
 each cell outside of the array will be considered dead.
 
 Examples:
